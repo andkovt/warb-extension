@@ -4,7 +4,7 @@ export {};
 
 let ws: WebSocket | null = null;;
 
-chrome.runtime.onMessage.addListener((message: Message, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((message: Message) => {
     if (message.enabled) {
         openAndWatch();
     } else {
@@ -28,15 +28,15 @@ function openAndWatch(): void {
         sendStatusMessage(true, 'Connected');
     }
     
-    ws.onmessage = (data) => {
+    ws.onmessage = () => {
         chrome.tabs.reload();
     }
     
-    ws.onclose = (data) => {
+    ws.onclose = () => {
         sendStatusMessage(false, 'Disconnected');
     }
 
-    ws.onerror = (event) => {
+    ws.onerror = () => {
         sendStatusMessage(false, 'Unable to connect to warb');
     }
 }
