@@ -1,4 +1,4 @@
-import { Message } from "./ts/types";
+import { Message } from "./types";
 
 export {};
 
