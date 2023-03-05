@@ -5,8 +5,6 @@ export {};
 let ws: WebSocket | null = null;;
 
 chrome.runtime.onMessage.addListener((message: Message, sender, sendResponse) => {
-    console.log(message.enabled);
-
     if (message.enabled) {
         openAndWatch();
     } else {
@@ -27,8 +25,7 @@ function openAndWatch(): void {
     ws = new WebSocket("ws://127.0.0.1:9797/watch");
 
     ws.onopen = () => {
-        console.log('Connected');
-        chrome.runtime.sendMessage({enabled: true, status: 'Connected'});
+        sendStatusMessage(true, 'Connected');
     }
     
     ws.onmessage = (data) => {
@@ -36,11 +33,14 @@ function openAndWatch(): void {
     }
     
     ws.onclose = (data) => {
-        chrome.runtime.sendMessage({enabled: false, status: 'Disconnected'});
+        sendStatusMessage(false, 'Disconnected');
     }
 
     ws.onerror = (event) => {
-        console.log(event);
-        chrome.runtime.sendMessage({enabled: false, status: 'Unable to connect to warb'});
+        sendStatusMessage(false, 'Unable to connect to warb');
     }
+}
+
+function sendStatusMessage(enabled: boolean, status: string): void {
+    chrome.runtime.sendMessage({enabled: enabled, status: status});
 }
